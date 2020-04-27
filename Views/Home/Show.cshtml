@@ -1,0 +1,38 @@
+@model DojoActivity
+<div class="jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4 text-dark">Dojo Activity Center Home</h1>
+        <h2 class="display-3">@Model.ActivityName</h2>
+        <p class="lead">Was created by: @Model.Coordinator.FirstName @Model.Coordinator.LastName</p>
+        <hr class="my-2">
+        <p>Event Starts: @Model.StartDate.ToShortDateString() At @Model.StartDate.ToShortTimeString() and will last for @Model.Duration minutes </p>
+        <p class="lead">
+            <a class="float-right btn btn-outline-danger btn-md" href="/Logout" role="button">Logout</a>
+            <a class="float-left btn btn-outline-secondary btn-md" href="/Home" role="button">Home</a>
+        </p>
+        <p class="text-center">@if(Model.Coordinator.UserId == ViewBag.User.UserId)
+            {
+            <a class="btn btn-danger btn-large" href="/Cancel/@Model.ActivityId" role="button">Cancel</a>
+                            } 
+                            else
+                            {
+                                if(Model.CalendarActivities.All(activity => activity.UserId != ViewBag.User.UserId))
+                                {
+                                    <a class="btn btn-warning btn-large" href="/Join/@ViewBag.User.UserId/@Model.ActivityId" role="button">Join</a>
+                                }
+                                if(Model.CalendarActivities.Any(activity => activity.UserId == ViewBag.User.UserId))
+                                {
+                                    <a class="btn btn-success btn-large" href="/Leave/@ViewBag.User.UserId/@Model.ActivityId" role="button">Leave</a>
+                                }
+                            }
+        </p>
+        <hr class="my-2">
+        <p><i>@Model.Description</i></p>
+        <ul><h4>Participants</h4>
+        @foreach(var activity in Model.CalendarActivities)
+        {
+            <li>@activity.UserJoin.FirstName</li>
+        }
+        </ul>        
+    </div>
+</div>

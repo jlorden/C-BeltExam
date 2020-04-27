@@ -1,0 +1,53 @@
+@model List<DojoActivity>
+
+
+<div class="m-3 jumbotron jumbotron-fluid">
+    <div class="container">
+        <h1 class="display-4 text-dark">Dojo Activity Center Home</h1>
+        <hr class="my-2">
+        <p class="text-dark">Add your event here</p>
+        <p>Or join one of our activities</p>
+        <p class="lead">
+            <a class="float-right btn btn-outline-danger btn-md" href="/logout" role="button">Logout</a>
+            <a class="float-left btn btn-outline-secondary btn-md" href="/New" role="button">Add Event</a>
+        </p>
+    </div>
+</div>
+    <table class="mt-5 table table-striped table-inverse">
+    <thead class="thead-inverse">
+        <tr>
+            <th>Activity</th>
+            <th>Date & Time</th>
+            <th>Duration</th>
+            <th>Event Coordinator</th>
+            <th>No. of Participants</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+            @foreach(var act in Model)
+            {
+            <tr>
+                <td scope="row"><a href="Show/@act.ActivityId">@act.ActivityName</a></td>
+                <td>@act.StartDate.ToShortDateString() | @act.StartDate.ToShortTimeString()</td>
+                <td>@act.Duration Minutes </td>
+                <td>@act.Coordinator.FirstName</td>
+                <td>@act.CalendarActivities.Count</td>
+                <td>
+                    @if(act.Coordinator.UserId == ViewBag.User.UserId)
+                    {
+                        <a class="text-danger" href="Cancel/@act.ActivityId">Cancel</a>
+                    }else{
+                        if(act.CalendarActivities.All(activity => activity.UserId != ViewBag.User.UserId))
+                        {
+                            <a class="text-warning" href="Join/@ViewBag.User.UserId/@act.ActivityId">Join</a>
+                        }
+                        if(act.CalendarActivities.Any(activity => activity.UserId == ViewBag.User.UserId))
+                        {
+                            <a class="text-success" href="Leave/@ViewBag.User.UserId/@act.ActivityId">Leave</a>
+                        }
+                    }
+                </td>
+            </tr>
+            }
+        </tbody>
